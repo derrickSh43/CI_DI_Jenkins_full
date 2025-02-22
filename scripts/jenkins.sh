@@ -31,7 +31,7 @@ EOT
 systemctl enable nginx
 systemctl start nginx
 
-# Install utilities
+# Install utilities (Git already included)
 dnf install -y git unzip curl wget
 
 # Install AWS CLI
@@ -57,6 +57,10 @@ dnf install -y nodejs npm
 
 # Install Snyk
 npm install -g snyk
+
+# Install Trivy
+curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin v0.51.4
+trivy --version
 
 # Log Jenkins password
 echo "Jenkins Initial Admin Password:" >> /var/log/user-data.log
