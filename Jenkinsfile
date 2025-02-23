@@ -44,3 +44,9 @@ pipeline {
         }
     }
 }
+
+
+run this first on the server
+# curl -fL https://getcli.jfrog.io | sh
+# chmod +x jfrog
+# sudo mv jfrog /usr/local/bin/
