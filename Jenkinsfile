@@ -24,16 +24,10 @@ pipeline {
         }
         stage('Build Artifact') {
             steps {
-                // Replace with your actual build commands
+                // Replace with your actual build commands that create the artifact.
                 sh 'echo "Building artifact..."'
-                // For testing, you might simulate an artifact:
+                // For testing purposes, you might simulate an artifact:
                 sh 'mkdir -p dist && echo "dummy content" > dist/test.zip'
-            }
-        }
-        stage('Verify Artifact') {
-            steps {
-                // List files to ensure that the artifact exists
-                sh 'echo "Verifying build output:" && ls -la'
             }
         }
         stage('Upload Artifact') {
@@ -42,7 +36,7 @@ pipeline {
                                                   usernameVariable: 'ARTIFACTORY_USER', 
                                                   passwordVariable: 'ARTIFACTORY_API_KEY')]) {
                     sh '''
-                        jfrog rt upload "dist/*.zip" "${NAMESPACE}/${MODULE_NAME}/${VERSION}/" \
+                        jfrog rt upload "dist/*.zip" "${ARTIFACTORY_REPO}/${NAMESPACE}/${MODULE_NAME}/${VERSION}/" \
                           --url="${ARTIFACTORY_URL}" --user="${ARTIFACTORY_USER}" --apikey="${ARTIFACTORY_API_KEY}"
                     '''
                 }
