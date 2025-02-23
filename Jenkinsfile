@@ -24,14 +24,20 @@ pipeline {
         }
         stage('Build Artifact') {
             steps {
-                // Replace with your actual build commands that generate the artifact (e.g., a .zip file).
+                // Replace with your actual build commands
                 sh 'echo "Building artifact..."'
+                // For testing, you might simulate an artifact:
+                sh 'mkdir -p dist && echo "dummy content" > dist/test.zip'
+            }
+        }
+        stage('Verify Artifact') {
+            steps {
+                // List files to ensure that the artifact exists
+                sh 'echo "Verifying build output:" && ls -la'
             }
         }
         stage('Upload Artifact') {
             steps {
-                // Use the Jenkins Credentials with the ID 'artifactory-creds'
-                // This credential should be of type "Username with password"
                 withCredentials([usernamePassword(credentialsId: 'artifactory-creds', 
                                                   usernameVariable: 'ARTIFACTORY_USER', 
                                                   passwordVariable: 'ARTIFACTORY_API_KEY')]) {
