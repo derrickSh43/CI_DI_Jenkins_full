@@ -24,9 +24,8 @@ pipeline {
         }
         stage('Build Artifact') {
             steps {
-                // Replace with your actual build commands that create the artifact.
                 sh 'echo "Building artifact..."'
-                // For testing purposes, you might simulate an artifact:
+             
                 sh 'mkdir -p dist && echo "dummy content" > dist/test.zip'
             }
         }
