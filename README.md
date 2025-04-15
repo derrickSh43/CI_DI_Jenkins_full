@@ -1,139 +1,95 @@
-# CI/CD Jenkins Automation with Terraform 🚀
+# CI_DI_Jenkins_full
 
-This project provisions a complete CI/CD pipeline using **Jenkins**, fully automated through **Terraform** and shell scripts. It showcases Infrastructure as Code (IaC), continuous integration, and automated deployment to a Tomcat server—all hosted on AWS EC2.
-
----
-
-## 📌 Key Features
-
-- ✅ Automated provisioning of Jenkins CI/CD infrastructure on AWS using Terraform
-- ✅ EC2 instances with security groups, SSH access, and networking setup
-- ✅ Auto-installation of Jenkins, Java, Git, Maven, and Tomcat via user data scripts
-- ✅ Jenkins pipeline (`Jenkinfile`) for:
-  - Cloning a GitHub project
-  - Building with Maven
-  - Deploying to Tomcat
-- ✅ Easy to extend for production-grade pipelines
+This repository provisions a complete CI/CD infrastructure using **Terraform** and automates security-focused deployments via **Jenkins**. It sets up a full DevSecOps pipeline, integrating tools for monitoring, secrets management, and application security scanning.
 
 ---
 
-## 🧱 Architecture
+## 🚀 What This Code Does
 
-```
-Terraform → AWS EC2 (Ubuntu) → User Data Scripts → Jenkins Master
-                                            ↳ Optional Jenkins Agent
-                                            ↳ Deploy to Tomcat Server
-```
+The Terraform and Jenkins pipeline code in this repo:
 
-- **Jenkins Master**: Installed and configured automatically
-- **Tomcat Server**: Receives deployed builds from Jenkins
-- **Security Groups**: Allow secure access to services (port 22, 8080, 8081)
-
----
-
-## 🚀 Deployment Steps
-
-### Prerequisites
-
-- AWS CLI configured
-- Terraform installed
-- SSH key pair (saved locally)
-- GitHub personal access token (optional, if accessing private repos)
+- 🏗️ Provisions AWS infrastructure (EC2 instances, Security Groups, etc.)
+- 🔐 Installs and configures **HashiCorp Vault** for secret management
+- 🛡️ Installs **OWASP ZAP** and **Dastardly** for automated **DAST (Dynamic Application Security Testing)**
+- 📊 Deploys **Grafana** and **Prometheus** for monitoring and observability
+- 🧪 Sets up a secure Jenkins pipeline that:
+  - Pulls code from a Git repository
+  - Triggers DAST scans
+  - Optionally runs additional SAST tools (can be extended)
+  - Manages secrets via Vault
+  - Logs and monitors pipeline health with Prometheus and Grafana
+- ☁️ Configures outputs to display useful AWS metadata (e.g., IPs, DNS)
 
 ---
 
-### 1. Clone the Repository
+## 📁 Repository Structure
 
 ```bash
-git clone https://github.com/derrickSh43/CI_DI_Jenkins_full.git
-cd CI_DI_Jenkins_full
-```
-
----
-
-### 2. Customize Variables
-
-Update values in `terraform.tfvars` (optional) or inline inside `main.tf` if applicable:
-- AWS region
-- Key pair name
-- Instance type
-- GitHub repo (in `Jenkinfile`)
-
----
-
-### 3. Initialize and Apply Terraform
-
-```bash
-terraform init
-terraform apply -auto-approve
-```
-
-This spins up:
-- EC2 instances (Jenkins master, Tomcat)
-- Security groups
-- Networking configuration
-
----
-
-### 4. Access Jenkins
-
-- Get the public IP of your Jenkins EC2 instance:
-  ```bash
-  terraform output jenkins_ip
-  ```
-- Visit `http://<jenkins_ip>:8080`
-- Retrieve Jenkins admin password from `/var/lib/jenkins/secrets/initialAdminPassword` (SSH into instance)
-
----
-
-### 🛠️ Jenkins Pipeline
-
-The pipeline is defined in `Jenkinfile` and performs the following:
-- Pulls source code from GitHub
-- Builds using Maven
-- Deploys `.war` file to the Tomcat server
-
-Modify the `Jenkinfile` as needed to match your repo and deployment process.
-
----
-
-## 📦 Project Structure
-
-```
 .
-├── scripts/
-│   ├── install_jenkins.sh
-│   ├── install_java.sh
-│   ├── install_tomcat.sh
-├── Jenkinfile
-├── main.tf
-├── outputs.tf
-├── servers.tf
-├── security-groups.tf
-└── variables.tf
+├── main.tf                # Terraform backend and provider config
+├── servers.tf            # EC2 instances, Vault, Jenkins, monitoring stack
+├── security-groups.tf    # AWS security group rules
+├── outputs.tf            # Terraform output variables
+├── variables.tf          # Input variables for customization
+├── Jenkinfile            # Jenkins declarative pipeline script
+├── scripts/              # Shell scripts to install and configure tools
+│   ├── install-vault.sh
+│   ├── install-zap.sh
+│   ├── install-prometheus.sh
+│   └── install-grafana.sh
+└── .gitignore
 ```
 
 ---
 
-## 📈 Future Enhancements
+## ✅ Prerequisites
 
-- [ ] Add monitoring with Prometheus + Grafana or CloudWatch
-- [ ] Store Jenkins artifacts in S3 or Artifactory
-- [ ] Implement rollback using Jenkins pipeline logic
-- [ ] Modularize Terraform for easier reusability
-- [ ] Replace SSH keypair with AWS Session Manager
-- [ ] Add CI/CD for infrastructure (Terraform Cloud or Atlantis)
+- [Terraform](https://www.terraform.io/downloads.html)
+- [Jenkins](https://www.jenkins.io/download/) installed (or provisioned by this code)
+- AWS account with EC2 access
+- AWS CLI configured (`aws configure`)
 
 ---
 
-## 🧠 Author
-  
-Cloud Engineer | CI/CD & DevOps Specialist  
-GitHub: [@derrickSh43](https://github.com/derrickSh43)
+## ⚙️ Getting Started
+
+1. **Clone the repository**:
+   ```bash
+   git clone https://github.com/derrickSh43/CI_DI_Jenkins_full.git
+   cd CI_DI_Jenkins_full
+   ```
+
+2. **Initialize Terraform**:
+   ```bash
+   terraform init
+   ```
+
+3. **Plan infrastructure changes**:
+   ```bash
+   terraform plan
+   ```
+
+4. **Apply to deploy infrastructure**:
+   ```bash
+   terraform apply
+   ```
+
+5. **Access Jenkins**:
+   - Use the public IP/DNS output from `terraform apply`
+   - Log in and start the pipeline using the `Jenkinfile`
 
 ---
 
-## 🛡️ License
+## 🧠 Notes
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-```
+- Vault will be configured with a basic dev mode by default (can be hardened).
+- OWASP ZAP and Dastardly are triggered as part of the Jenkins CI pipeline.
+- Prometheus scrapes metrics from Jenkins and system targets.
+- Grafana dashboards are automatically created (you can customize them).
+- You can add more stages for things like Snyk, TruffleHog, or artifact promotion.
+
+---
+
+## 📜 License
+
+MIT License — use freely, modify responsibly.
